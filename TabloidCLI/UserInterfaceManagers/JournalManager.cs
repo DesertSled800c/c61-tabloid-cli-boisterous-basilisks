@@ -24,6 +24,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 1) Add Journal");
             Console.WriteLine(" 2) List Journal Entries");
             Console.WriteLine(" 3) Delete Journal Entry");
+            Console.WriteLine(" 4) Edit Journal Entry");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -38,6 +39,9 @@ namespace TabloidCLI.UserInterfaceManagers
 
                     case "3":
                    Remove();
+                    return this;
+                    case "4":
+                    Edit();
                     return this;
 
                 default:
@@ -107,6 +111,32 @@ namespace TabloidCLI.UserInterfaceManagers
             }
 
         }
+
+        private void Edit()
+        {
+            Journal journalToEdit = Choose("Which Journal Entry would you like to edit?");
+            if (journalToEdit == null)
+            {
+                return;
+            }
+
+            Console.WriteLine();
+            Console.Write("New Title (blank to leave unchanged: ");
+            string title = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                journalToEdit.Title = title;
+            }
+            Console.Write("New Content (blank to leave unchanged: ");
+            string content = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                journalToEdit.Content = content;
+            }
+
+            _journalRepository.Update(journalToEdit);
+        }
+
 
     }
 }

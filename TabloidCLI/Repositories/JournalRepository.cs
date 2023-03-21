@@ -6,10 +6,10 @@ using TabloidCLI.Repositories;
 
 namespace TabloidCLI
 {
-	public class JournalRepository : DatabaseConnector, IRepository<Journal>
-	{
-		public JournalRepository(string connectionString) : base(connectionString)
-		{ }
+    public class JournalRepository : DatabaseConnector, IRepository<Journal>
+    {
+        public JournalRepository(string connectionString) : base(connectionString)
+        { }
 
         public List<Journal> GetAll()
         {
@@ -33,7 +33,7 @@ namespace TabloidCLI
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
-                            Content= reader.GetString(reader.GetOrdinal("Content")),
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                         };
                         journals.Add(journal);
@@ -63,7 +63,7 @@ namespace TabloidCLI
                                                      VALUES (@title, @content, GETDATE())";
                     cmd.Parameters.AddWithValue("@title", journal.Title);
                     cmd.Parameters.AddWithValue("@content", journal.Content);
-                    
+
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -77,8 +77,19 @@ namespace TabloidCLI
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Journal WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
     }
-}
+    }
+
 

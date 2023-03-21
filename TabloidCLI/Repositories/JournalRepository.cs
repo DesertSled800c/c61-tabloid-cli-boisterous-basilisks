@@ -24,8 +24,8 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Journal (Title, Content)
-                                                     VALUES (@title, @content)";
+                    cmd.CommandText = @"INSERT INTO Journal (Title, Content, CreateDateTime)
+                                                     VALUES (@title, @content, GETDATE())";
                     cmd.Parameters.AddWithValue("@title", journal.Title);
                     cmd.Parameters.AddWithValue("@content", journal.Content);
                     

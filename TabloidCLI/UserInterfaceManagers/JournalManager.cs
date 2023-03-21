@@ -22,6 +22,7 @@ namespace TabloidCLI.UserInterfaceManagers
         {
             Console.WriteLine("Journal Menu");
             Console.WriteLine(" 1) Add Journal");
+            Console.WriteLine(" 2) List Journal Entries");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -29,6 +30,9 @@ namespace TabloidCLI.UserInterfaceManagers
             {
                 case "1":
                     Add();
+                    return this;
+                case "2":
+                    List();
                     return this;
                 default:
                     Console.WriteLine("Invalid Selection");
@@ -47,6 +51,14 @@ namespace TabloidCLI.UserInterfaceManagers
             journal.Content = Console.ReadLine();
 
             _journalRepository.Insert(journal);
+        }
+        private void List()
+        {
+            List<Journal> journals= _journalRepository.GetAll();
+            foreach (Journal journal in journals)
+            {
+                Console.WriteLine(journal);
+            }
         }
 
     }

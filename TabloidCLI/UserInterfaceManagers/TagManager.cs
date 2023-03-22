@@ -104,14 +104,14 @@ namespace TabloidCLI.UserInterfaceManagers
 
         private void Edit()
         {
-            Tag tagToEdit = Choose("Which Journal Tag would you like to edit?");
+            Tag tagToEdit = Choose("Which Tag would you like to edit?");
             if (tagToEdit == null)
             {
                 return;
             }
 
             Console.WriteLine();
-            Console.Write("New Title (blank to leave unchanged: ");
+            Console.Write("New Tag (blank to leave unchanged: ");
             string name = Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(name))
             {

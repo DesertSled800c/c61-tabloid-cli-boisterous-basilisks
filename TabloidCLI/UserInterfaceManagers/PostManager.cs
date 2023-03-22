@@ -25,6 +25,8 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine("Author Menu");
             Console.WriteLine(" 1) List Posts");
             Console.WriteLine(" 2) Add Posts");
+            Console.WriteLine(" 3) Edit Post");
+            Console.WriteLine(" 4) Remove Post");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -37,6 +39,9 @@ namespace TabloidCLI.UserInterfaceManagers
                     AddByAuthorBlog();
                     return this;
                 case "3":
+                    Edit();
+                    return this;
+                case "4":
                     Remove();
                     return this;
                 default:
@@ -140,13 +145,14 @@ namespace TabloidCLI.UserInterfaceManagers
                 postToEdit.Url = url;
             }
             Console.Write("New Publish Date and Time (blank to leave unchanged: ");
-            DateTime publishDateTime = DateTime.Parse(Console.ReadLine());
+            string publishDateTime = Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(url))
             {
-                postToEdit.PublishDateTime = publishDateTime;
+                postToEdit.PublishDateTime = DateTime.Parse(publishDateTime);
             }
             Console.Write("New Author ID (blank to leave unchanged: ");
             string author = Console.ReadLine();
+            postToEdit.Author = new Author();
             if (!string.IsNullOrWhiteSpace(author))
             {
                 postToEdit.Author.Id = int.Parse(author);

@@ -10,45 +10,53 @@ namespace TabloidCLI.Repositories
     {
         public PostRepository(string connectionString) : base(connectionString) { }
 
-        //public List<Post> GetAll()
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"SELECT id,
-        //                                       Title,
-        //                                       Url,
-        //                                       PublishDateTime,
-        //                                       AuthorId,
-        //                                       BlogId
-        //                                  FROM Post";
+        public List<Post> GetAll()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT id,
+                                               Title,
+                                               Url,
+                                               PublishDateTime,
+                                               AuthorId,
+                                               BlogId
+                                          FROM Post";
 
-        //            List<Post> posts = new List<Post>();
+                    List<Post> posts = new List<Post>();
 
-        //            SqlDataReader reader = cmd.ExecuteReader();
-        //            while (reader.Read())
-        //            {
-        //                Post post = new Post()
-        //                {
-        //                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
-        //                    Title = reader.GetString(reader.GetOrdinal("Title")),
-        //                    Url = reader.GetString(reader.GetOrdinal("Url")),
-        //                    PublishDateTime = reader.GetInt32(reader.GetOrdinal("PublishDateTime")),
-        //                    Author = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-        //                    Blog = int.Parse(reader.GetInt32(reader.GetOrdinal("BlogId"))),
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Url = reader.GetString(reader.GetOrdinal("Url")),
+                            //PublishDateTime = reader.GetInt32(reader.GetOrdinal("PublishDateTime")),
+                            //Author = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                            //Blog = int.Parse(reader.GetInt32(reader.GetOrdinal("BlogId"))),
+                            PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                            Author = new Author()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                            },
+                            Blog = new Blog()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
+                            }
+                        };
+                        posts.Add(post);
+                    }
 
-        //                };
-        //                posts.Add(post);
-        //            }
+                    reader.Close();
 
-        //            reader.Close();
-
-        //            return posts;
-        //        }
-        //    }
-        //}
+                    return posts;
+                }
+            }
+        }
 
         public Post Get(int id)
         {
@@ -135,17 +143,44 @@ namespace TabloidCLI.Repositories
 
         public void Update(Post post)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Post 
+                                           SET (Title, Url, PublishDateTime, Author, Blog)
+                                                     VALUES (@title, @url, @publishDateTime, @author, @blog);
+                                         WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@title", post.Title);
+                    cmd.Parameters.AddWithValue("@url", post.Url);
+                    cmd.Parameters.AddWithValue("@publishDateTime", post.PublishDateTime);
+                    cmd.Parameters.AddWithValue("@author", post.Author);
+                    cmd.Parameters.AddWithValue("@blog", post.Blog);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Post WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
-        public List<Post> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //public List<Post> GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

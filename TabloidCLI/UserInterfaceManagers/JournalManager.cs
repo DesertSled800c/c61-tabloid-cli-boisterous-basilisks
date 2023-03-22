@@ -5,14 +5,14 @@ using TabloidCLI.Models;
 
 namespace TabloidCLI.UserInterfaceManagers
 {
-	public class JournalManager : IUserInterfaceManager
-	{
+    public class JournalManager : IUserInterfaceManager
+    {
         private readonly IUserInterfaceManager _parentUI;
         private JournalRepository _journalRepository;
         private string _connectionString;
 
         public JournalManager(IUserInterfaceManager parentUI, string connectionString)
-		{
+        {
             _parentUI = parentUI;
             _journalRepository = new JournalRepository(connectionString);
             _connectionString = connectionString;
@@ -36,18 +36,17 @@ namespace TabloidCLI.UserInterfaceManagers
                 case "2":
                     List();
                     return this;
-
-                    case "3":
-                   Remove();
+                case "3":
+                    Remove();
                     return this;
-                    case "4":
+                case "4":
                     Edit();
                     return this;
 
                 default:
                     Console.WriteLine("Invalid Selection");
                     return this;
-                    
+
             }
         }
 
@@ -96,7 +95,7 @@ namespace TabloidCLI.UserInterfaceManagers
         }
         private void List()
         {
-            List<Journal> journals= _journalRepository.GetAll();
+            List<Journal> journals = _journalRepository.GetAll();
             foreach (Journal journal in journals)
             {
                 Console.WriteLine(journal);

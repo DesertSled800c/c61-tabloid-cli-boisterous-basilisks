@@ -152,11 +152,12 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             Console.Write("New Author ID (blank to leave unchanged: ");
             string author = Console.ReadLine();
-            postToEdit.Author = new Author();
             if (!string.IsNullOrWhiteSpace(author))
             {
+                postToEdit.Author = new Author();   
                 postToEdit.Author.Id = int.Parse(author);
             }
+
             Console.Write("New Blog ID (blank to leave unchanged: ");
             string blog = Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(blog))

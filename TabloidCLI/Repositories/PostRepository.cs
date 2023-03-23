@@ -149,8 +149,13 @@ namespace TabloidCLI.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"UPDATE Post 
-                                           SET Title = @title, Url = @url, PublishDateTime = @publishDateTime, AuthorId = @author, BlogId = @blog
+                                           SET Title = @title,
+                                               Url = @url,
+                                               PublishDateTime = @publishDateTime,
+                                               AuthorId = @author,
+                                               BlogId = @blog
                                          WHERE id = @id";
+
                     cmd.Parameters.AddWithValue("@id", post.Id);
                     cmd.Parameters.AddWithValue("@title", post.Title);
                     cmd.Parameters.AddWithValue("@url", post.Url);
@@ -170,7 +175,9 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM Post WHERE id = @id";
+                    cmd.CommandText = @"DELETE
+                                        FROM Post
+                                        WHERE id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
                     cmd.ExecuteNonQuery();

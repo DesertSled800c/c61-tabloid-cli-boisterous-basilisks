@@ -52,7 +52,7 @@ namespace TabloidCLI.UserInterfaceManagers
                 case "3":
                     Remove();
                     return this;
-                case "4":
+                case "0":
                     return _parentUI;
                 default:
                     Console.WriteLine("Invalid Selection");
@@ -79,7 +79,7 @@ namespace TabloidCLI.UserInterfaceManagers
             note.Content = contentEntered;
             
 
-            _noteRepository.InsertNote(post,note); //make this post repository
+            _postRepository.InsertNote(post,note);
             Console.WriteLine("Note Added");
             Console.WriteLine();
 
@@ -91,9 +91,9 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine("Your Current Notes");
             List<Note> notes = _noteRepository.GetAllLinkedToPost(_postId);
 
-            foreach (Note note in notes)
+            for (int i = 0; i < notes.Count; i++)
             {
-                int i = 0;
+                Note note = notes[i];
                 Console.WriteLine($"{i + 1}: {note.Title} \n\t{note.CreateDateTime}\n\t{note.Content}");
             }
             Console.WriteLine();
@@ -112,7 +112,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.Write("> ");
             int deleteChoice = int.Parse(Console.ReadLine());
             Console.WriteLine();
-            _noteRepository.DeletNote(_postId, deleteChoice);
+            _postRepository.DeletNote(_postId, deleteChoice);
         }
     }
 }

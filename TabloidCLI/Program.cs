@@ -1,4 +1,5 @@
-﻿using TabloidCLI.UserInterfaceManagers;
+﻿using System;
+using TabloidCLI.UserInterfaceManagers;
 
 namespace TabloidCLI
 {
@@ -6,6 +7,8 @@ namespace TabloidCLI
     {
         static void Main(string[] args)
         {
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.Clear();
             // MainMenuManager implements the IUserInterfaceManager interface
             IUserInterfaceManager ui = new MainMenuManager();
             while (ui != null)

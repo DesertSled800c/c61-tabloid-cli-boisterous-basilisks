@@ -15,15 +15,18 @@ namespace TabloidCLI
     {
         public NoteRepository(string connectionString) : base(connectionString) { }
 
-        public List<Note> GetAll()
+        public List<Note> GetAllLinkedToPost(int id)
         {
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.CommandText = @"SELECT Id, Title, Content, CreatDateTime
-                                       FROM Note";
+                    cmd.CommandText = @"SELECT n.Id, n.Title, n.Content, n.CreateDateTime
+                                        FROM Note n JOIN Post p ON n.postId = p.Id
+                                        WHERE p.Id = @id";
+                    cmd.Parameters.AddWithValue("id", id);
+
                     using(SqlDataReader reader = cmd.ExecuteReader())
                     {
                         List<Note> notes = new List<Note>();
@@ -45,18 +48,27 @@ namespace TabloidCLI
         }
 
 
-        public void Add(Note note)
+
+        /*for post detail manager
+         add private int _postId;
+        add it to contructor as well
+        // add choose method to postManager
+        // private AddNote() to postManager
+        //private RemoveNOte() to postManager
+        */
+
+        public void InsertNote(Post post, Note note) //add to PostRepo
         {
             using(SqlConnection conn= Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Note(Title, Content, CreateDateTime.PostId)
-                                    VALUE(@title, @content, GETDATE(), @postId)";
+                    cmd.CommandText = @"INSERT INTO Note ( Title, Content, CreateDateTime, PostId)
+                                    VALUES (@title, @content, GETDATE(), @postId)";
                     cmd.Parameters.AddWithValue("@title", note.Title);
                     cmd.Parameters.AddWithValue("@content", note.Content);
-                    cmd.Parameters.AddWithValue("@postId", note.PostId);
+                    cmd.Parameters.AddWithValue("@postId", post.Id);
 
                     cmd.ExecuteNonQuery();
                 };
@@ -64,16 +76,17 @@ namespace TabloidCLI
 
         }
 
-        public void Remove(int id)
+        public void DeletNote(int postId, int id ) //Add to PostRepo
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM Note WHERE Id = @id";
+                    cmd.CommandText = @"DELETE FROM Note 
+                                        WHERE PostId = @postId AND Id = @id";
+                    cmd.Parameters.AddWithValue("@postId", postId);
                     cmd.Parameters.AddWithValue("@id", id);
-
                     cmd.ExecuteNonQuery();
                 }
             }

@@ -128,13 +128,13 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Post (Title, Url, PublishDateTime, Author, Blog)
+                    cmd.CommandText = @"INSERT INTO Post (Title, Url, PublishDateTime, AuthorId, BlogId)
                                                      VALUES (@title, @url, @publishDateTime, @author, @blog)";
                     cmd.Parameters.AddWithValue("@title", post.Title);
                     cmd.Parameters.AddWithValue("@url", post.Url);
                     cmd.Parameters.AddWithValue("@publishDateTime", post.PublishDateTime);
-                    cmd.Parameters.AddWithValue("@author", post.Author);
-                    cmd.Parameters.AddWithValue("@blog", post.Blog);
+                    cmd.Parameters.AddWithValue("@author", post.Author.Id);
+                    cmd.Parameters.AddWithValue("@blog", post.Blog.Id);
 
                     cmd.ExecuteNonQuery();
                 }

@@ -10,6 +10,7 @@ namespace TabloidCLI.UserInterfaceManagers
         private readonly IUserInterfaceManager _parentUI;
         private PostRepository _postRepository;
         private AuthorRepository _authorRepository;
+        private BlogRepository _blogRepository;
         private string _connectionString;
 
         public PostManager(IUserInterfaceManager parentUI, string connectionString)
@@ -17,6 +18,7 @@ namespace TabloidCLI.UserInterfaceManagers
             _parentUI = parentUI;
             _postRepository = new PostRepository(connectionString);
             _authorRepository = new AuthorRepository(connectionString);
+            _blogRepository = new BlogRepository(connectionString);
             _connectionString = connectionString;
         }
 
@@ -116,7 +118,13 @@ namespace TabloidCLI.UserInterfaceManagers
             post.Author = new Author();
             post.Author.Id = int.Parse(Console.ReadLine());
 
+            List<Blog> blogs = _blogRepository.GetAll();
+            foreach (Blog b in blogs)
+            {
+                Console.WriteLine($"{b.Id} {b.Title}");
+            }
             Console.Write("BlogId: ");
+            post.Blog = new Blog();
             post.Blog.Id = int.Parse(Console.ReadLine());
 
 

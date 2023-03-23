@@ -107,6 +107,6 @@ namespace TabloidCLI
             }
         }
     }
-    }
+}
 
 

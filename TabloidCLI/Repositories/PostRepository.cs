@@ -35,9 +35,6 @@ namespace TabloidCLI.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             Url = reader.GetString(reader.GetOrdinal("Url")),
-                            //PublishDateTime = reader.GetInt32(reader.GetOrdinal("PublishDateTime")),
-                            //Author = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                            //Blog = int.Parse(reader.GetInt32(reader.GetOrdinal("BlogId"))),
                             PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
                             Author = new Author()
                             {

@@ -30,6 +30,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 3) Edit Post");
             Console.WriteLine(" 4) Remove Post");
             Console.WriteLine(" 5) Post Details");
+            Console.WriteLine(" 0) Go Back");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -58,6 +59,8 @@ namespace TabloidCLI.UserInterfaceManagers
                     {
                         return new PostDetailManager(this, _connectionString, post.Id);
                     }
+                case "0":
+                    return _parentUI;
                 default:
                     Console.WriteLine("Invalid Selection");
                     return this;

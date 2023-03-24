@@ -35,9 +35,6 @@ namespace TabloidCLI.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             Url = reader.GetString(reader.GetOrdinal("Url")),
-                            //PublishDateTime = reader.GetInt32(reader.GetOrdinal("PublishDateTime")),
-                            //Author = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                            //Blog = int.Parse(reader.GetInt32(reader.GetOrdinal("BlogId"))),
                             PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
                             Author = new Author()
                             {
@@ -164,13 +161,13 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Post (Title, Url, PublishDateTime, Author, Blog)
+                    cmd.CommandText = @"INSERT INTO Post (Title, Url, PublishDateTime, AuthorId, BlogId)
                                                      VALUES (@title, @url, @publishDateTime, @author, @blog)";
                     cmd.Parameters.AddWithValue("@title", post.Title);
                     cmd.Parameters.AddWithValue("@url", post.Url);
                     cmd.Parameters.AddWithValue("@publishDateTime", post.PublishDateTime);
-                    cmd.Parameters.AddWithValue("@author", post.Author);
-                    cmd.Parameters.AddWithValue("@blog", post.Blog);
+                    cmd.Parameters.AddWithValue("@author", post.Author.Id);
+                    cmd.Parameters.AddWithValue("@blog", post.Blog.Id);
 
                     cmd.ExecuteNonQuery();
                 }

@@ -63,8 +63,10 @@ namespace TabloidCLI.UserInterfaceManagers
 
         private void View()
         {
+            Console.WriteLine();
             Post post = _postRepository.Get(_postId);
-            Console.WriteLine($"Title: {post.Title} \n\t URL: {post.Url} \n\t Publication Date: {post.PublishDateTime}");
+            Console.WriteLine($"Title: \t{post.Title} \n\t URL: {post.Url} \n\t Publication Date: {post.PublishDateTime}");
+            Console.WriteLine();
         }
 
         private void ViewPostTags()

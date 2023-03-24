@@ -62,17 +62,14 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT p.Id AS PostId,
-                                               p.Title,
-                                               p.Url,
-                                               p.PublishDateTime
-                                            
-                                          FROM Post p
-                                          WHERE p.Id = @id";
+                    cmd.CommandText = @"SELECT  p.Id AS PostId, p.Title,p.Url,p.PublishDateTime, a.Id AS AuthorId, a.FirstName
+                                        FROM Post p JOIN Author a ON p.AuthorId = a.Id
+                                        WHERE p.Id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
 
                     Post post = null;
+                    Author author = null;
 
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -86,6 +83,14 @@ namespace TabloidCLI.Repositories
                                 Url = reader.GetString(reader.GetOrdinal("Url")),
                                 PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
                             };
+                            if (!reader.IsDBNull(reader.GetOrdinal("AuthorId")))
+                            {
+                                author = new Author
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
+                                };  
+                            }
                         }
                     }
 

@@ -5,7 +5,7 @@ namespace TabloidCLI.UserInterfaceManagers
 {
     public class SearchResults<T>
     {
-        private List<T> _results = new List<T>();
+        public List<T> _results = new List<T>();
 
         public string Title { get; set; } = "Search Results";
 

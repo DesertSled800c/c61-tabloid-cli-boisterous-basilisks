@@ -57,7 +57,48 @@ namespace TabloidCLI.Repositories
 
         public Post Get(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT  p.Id AS PostId, p.Title,p.Url,p.PublishDateTime, a.Id AS AuthorId, a.FirstName
+                                        FROM Post p JOIN Author a ON p.AuthorId = a.Id
+                                        WHERE p.Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    Post post = null;
+                    Author author = null;
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (post == null)
+                        {
+                           post = new Post()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("PostId")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Url = reader.GetString(reader.GetOrdinal("Url")),
+                                PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                            };
+                            if (!reader.IsDBNull(reader.GetOrdinal("AuthorId")))
+                            {
+                                author = new Author
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
+                                };  
+                            }
+                        }
+                    }
+
+                    reader.Close();
+
+                    return post;
+                }
+            }
         }
 
         public List<Post> GetByAuthor(int authorId)
@@ -177,6 +218,78 @@ namespace TabloidCLI.Repositories
                                         WHERE id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void InsertNote(Post post, Note note)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Note ( Title, Content, CreateDateTime, PostId)
+                                    VALUES (@title, @content, GETDATE(), @postId)";
+                    cmd.Parameters.AddWithValue("@title", note.Title);
+                    cmd.Parameters.AddWithValue("@content", note.Content);
+                    cmd.Parameters.AddWithValue("@postId", post.Id);
+
+                    cmd.ExecuteNonQuery();
+                };
+            }
+
+        }
+
+        public void InsertPostTag(Post post, Tag tag)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO PostTag ( PostId, TagId )
+                                    VALUES (@postId, @tagId )";
+                    
+                    cmd.Parameters.AddWithValue("@postId", post.Id);
+                    cmd.Parameters.AddWithValue("@tagId", tag.Id);
+
+                    cmd.ExecuteNonQuery();
+                };
+            }
+
+        }
+
+        public void DeletePostTag(Post post, Tag tag)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM PostTag 
+                                    WHERE  PostId = @postId AND TagId = @tagId ";
+
+                    cmd.Parameters.AddWithValue("@postId", post.Id);
+                    cmd.Parameters.AddWithValue("@tagId", tag.Id);
+                    cmd.ExecuteNonQuery();
+                };
+            }
+
+        }
+
+        public void DeletNote(int postId, int id) 
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Note 
+                                        WHERE PostId = @postId AND Id = @id";
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }

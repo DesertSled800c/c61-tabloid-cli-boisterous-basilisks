@@ -29,8 +29,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 2) Add Posts");
             Console.WriteLine(" 3) Edit Post");
             Console.WriteLine(" 4) Remove Post");
-            Console.WriteLine(" 0) Go Back");
-
+            Console.WriteLine(" 5) Post Details");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -48,8 +47,17 @@ namespace TabloidCLI.UserInterfaceManagers
                 case "4":
                     Remove();
                     return this;
-                case "0":
-                    return _parentUI;
+                case "5":
+
+                    Post post = Choose();
+                    if (post == null)
+                    {
+                        return this;
+                    }
+                    else
+                    {
+                        return new PostDetailManager(this, _connectionString, post.Id);
+                    }
                 default:
                     Console.WriteLine("Invalid Selection");
                     return this;
@@ -67,6 +75,7 @@ namespace TabloidCLI.UserInterfaceManagers
 
         private Post Choose(string prompt = null)
         {
+            Console.WriteLine();
             if (prompt == null)
             {
                 prompt = "Please choose a Post:";
@@ -87,6 +96,8 @@ namespace TabloidCLI.UserInterfaceManagers
             try
             {
                 int choice = int.Parse(input);
+                Console.WriteLine();
+                Console.Write("POST DETAILS FOR: ");
                 return posts[choice - 1];
             }
             catch (Exception)
@@ -106,33 +117,41 @@ namespace TabloidCLI.UserInterfaceManagers
 
             Console.Write("Title: ");
             post.Title = Console.ReadLine();
+            Console.WriteLine();
 
             Console.Write("Url: ");
             post.Url = Console.ReadLine();
+            Console.WriteLine();
 
             Console.Write("Publish YYYY-MM-DD : ");
             post.PublishDateTime = DateTime.Parse(Console.ReadLine());
+            Console.WriteLine();
 
             List<Author> authors = _authorRepository.GetAll();
             foreach (Author a in authors)
             {
                 Console.WriteLine($"{a.Id} {a.FullName}");
             }
-            Console.Write("AuthorId: ");
+            Console.WriteLine();
+            Console.Write("Select from the Author List Above: ");
             post.Author = new Author();
             post.Author.Id = int.Parse(Console.ReadLine());
+            
 
             List<Blog> blogs = _blogRepository.GetAll();
             foreach (Blog b in blogs)
             {
                 Console.WriteLine($"{b.Id} {b.Title}");
             }
-            Console.Write("BlogId: ");
+            Console.WriteLine();
+            Console.Write("Select from the Blog List Above: ");
             post.Blog = new Blog();
             post.Blog.Id = int.Parse(Console.ReadLine());
 
 
             _postRepository.Insert(post);
+            Console.WriteLine($"{post.Title} has been added.");
+            Console.WriteLine();
         }
 
         private void Edit()

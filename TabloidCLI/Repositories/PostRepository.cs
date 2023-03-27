@@ -62,36 +62,67 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT  p.Id AS PostId, p.Title,p.Url,p.PublishDateTime, a.Id AS AuthorId, a.FirstName
-                                        FROM Post p JOIN Author a ON p.AuthorId = a.Id
+                    cmd.CommandText = @"SELECT  p.Id AS PostId, p.Title,p.Url,p.PublishDateTime, 
+		                                a.Id AS AuthorId, a.FirstName, a.LastName,
+		                                t.Name AS TagName,
+                                        b.Title AS BlogTitle
+                                        FROM Post p LEFT JOIN Author a ON p.AuthorId = a.Id
+			                            LEFT JOIN PostTag pt ON pt.PostId = p.Id
+			                            LEFT JOIN Tag t  ON t.Id = pt.TagId
+                                        LEFT JOIN Blog b on p.BlogId = b.Id
                                         WHERE p.Id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
 
                     Post post = null;
                     Author author = null;
+                    Blog blog = null;
+                    List<Tag> tags = new List<Tag> ();
 
                     SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    if (reader.Read())
                     {
                         if (post == null)
                         {
-                           post = new Post()
+                           
+                            if (!reader.IsDBNull(reader.GetOrdinal("AuthorId")))
+                            {
+                              author = new Author()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                              };  
+                            }
+                            if (!reader.IsDBNull(reader.GetOrdinal("TagName")))
+                            {
+                              Tag tag = new Tag()
+                              {
+                                  Name = reader.GetString(reader.GetOrdinal("TagName"))
+                              };
+                                tags.Add(tag);
+                            }
+                            if (!reader.IsDBNull(reader.GetOrdinal("BlogTitle")))
+                            {
+                                blog = new Blog()
+                                {
+                                    Title = reader.GetString(reader.GetOrdinal("BlogTitle"))
+                                };
+
+                            }
+                            post = new Post()
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("PostId")),
                                 Title = reader.GetString(reader.GetOrdinal("Title")),
                                 Url = reader.GetString(reader.GetOrdinal("Url")),
                                 PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                                Author = author,
+                                Tags = tags,
+                                Blog = blog
+
                             };
-                            if (!reader.IsDBNull(reader.GetOrdinal("AuthorId")))
-                            {
-                                author = new Author
-                                {
-                                    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
-                                };  
-                            }
                         }
+
                     }
 
                     reader.Close();

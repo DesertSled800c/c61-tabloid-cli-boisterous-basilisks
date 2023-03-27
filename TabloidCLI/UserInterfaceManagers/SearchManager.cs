@@ -102,30 +102,19 @@ namespace TabloidCLI.UserInterfaceManagers
 
         private void SearchAll()
         {
-            Console.Write("Enter Tag Name To Search> ");
+            Console.Write("Tag> ");
             string tagName = Console.ReadLine();
-            bool searching= true;
-            while (searching == true)
+
+            SearchResults<object> results = _tagRepository.SearchAll(tagName);
+
+            if (results.NoResultsFound)
             {
-                
-                SearchResults<Post> results = _tagRepository.SearchPosts(tagName);
-                results.Display();
-
-                SearchResults<Blog> results2 = _tagRepository.SearchBlogs(tagName);
-                results2.Display();
-
-                SearchResults<Author> results3 = _tagRepository.SearchAuthors(tagName);
-                results3.Display();
-                if (results.NoResultsFound && results2.NoResultsFound && results3.NoResultsFound)
-                {
-                    Console.WriteLine($"No results for {tagName}");
-                }
-
-                searching = false;
+                Console.WriteLine($"No results for {tagName}");
             }
-
-
-
+            else
+            {
+                results.Display();
+            }
         }
     }
 }

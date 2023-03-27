@@ -65,7 +65,10 @@ namespace TabloidCLI.UserInterfaceManagers
         {
             Console.WriteLine();
             Post post = _postRepository.Get(_postId);
-            Console.WriteLine($"Title: \t{post.Title} \n\t URL: {post.Url} \n\t Publication Date: {post.PublishDateTime}");
+            Console.WriteLine($"Post's Title: {post.Title} \n\t URL: {post.Url} \n\t Publication Date: {post.PublishDateTime}");
+            Console.WriteLine($"Post's Author: \t{post.Author.FullName}");
+            Console.WriteLine($"Post's Blog: \t{post.Blog.Title}");
+
             Console.WriteLine();
         }
 
